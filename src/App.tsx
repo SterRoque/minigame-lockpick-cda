@@ -5,6 +5,7 @@ function App() {
   const directionRef = useRef(1);
 
   const [position, setPosition] = useState(0);
+  const [rotationPickBar, setRotationPickBar] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
 
   const speed = 2;
@@ -38,6 +39,28 @@ function App() {
     return () => clearInterval(interval);
   }, [containerWidth]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code === "Space") {
+        setRotationPickBar(2);
+      }
+    }
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.code === "Space") {
+        setRotationPickBar(0);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
   return (
     <div className="w-full h-screen flex justify-center items-center">
       <div className="max-w-105 w-full">
@@ -59,6 +82,9 @@ function App() {
             style={{
               left: position,
               width: barWidth,
+              transform: `rotate(${-rotationPickBar}deg)`,
+              transformOrigin: "left center",
+              transition: "transform 0.1s ease",
             }}
           />
         </div>
